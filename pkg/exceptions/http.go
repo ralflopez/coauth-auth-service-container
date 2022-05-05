@@ -1,4 +1,4 @@
-package utils
+package exceptions
 
 import (
 	"encoding/json"

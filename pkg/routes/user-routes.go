@@ -11,7 +11,7 @@ import (
 func RegisterUserRoutes(r *mux.Router) {
 	user := r.PathPrefix("/users").Subrouter().StrictSlash(false)
  
-	user.HandleFunc("", controllers.GetUser).Methods(http.MethodGet)
+	user.HandleFunc("/{id}", controllers.GetUser).Methods(http.MethodGet)
 	user.HandleFunc("", controllers.GetUsers).Methods(http.MethodGet)
 	user.HandleFunc("", controllers.CreateUser).Methods(http.MethodPost)
 	user.HandleFunc("/{id}", controllers.UpdateUser).Methods(http.MethodPut)
