@@ -1,25 +1,23 @@
 package main
 
 import (
+	"coauth/pkg/config"
+	"coauth/pkg/routes"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	// Config
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "9000"
-	}
-
 	// Server
-	router := mux.NewRouter()
+	r := mux.NewRouter()
+
+	// Routes
+	routes.RegisterUserRoutes(r)
 	
-	err := http.ListenAndServe(fmt.Sprintf(":%s", port), router)
+	err := http.ListenAndServe(fmt.Sprintf(":%s", config.PORT), r)
 	if err == nil {
 		log.Fatal(err.Error())
 	}

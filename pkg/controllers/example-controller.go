@@ -5,22 +5,22 @@ import (
 	"net/http"
 )
 
-func GetUser(w http.ResponseWriter, r *http.Request) {
+func GetExample(w http.ResponseWriter, r *http.Request) {
 	utils.ThrowNotFoundException(w, "Not implemented")
 }
 
-func GetUsers(w http.ResponseWriter, r *http.Request) {
+func GetExamples(w http.ResponseWriter, r *http.Request) {
 	utils.ThrowNotFoundException(w, "Not implemented")
 }
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func CreateExample(w http.ResponseWriter, r *http.Request) {
 	utils.ThrowNotFoundException(w, "Not implemented")
 }
 
-func UpdateUser(w http.ResponseWriter, r *http.Request) {
+func UpdateExample(w http.ResponseWriter, r *http.Request) {
 	utils.ThrowNotFoundException(w, "Not implemented")
 }
 
-func DeleteUser(w http.ResponseWriter, r *http.Request) {
+func DeleteExample(w http.ResponseWriter, r *http.Request) {
 	utils.ThrowNotFoundException(w, "Not implemented")
 }
