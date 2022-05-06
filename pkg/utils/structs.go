@@ -11,10 +11,10 @@ func ValidateStruct(s interface{}) error {
 	return validator.New().Struct(s)
 }
 
-func StructToJSON(s interface{}, w io.Writer) error {
+func StructToJSON(w io.Writer, s interface{}) error {
 	return json.NewEncoder(w).Encode(s)
 }
 
-func JSONToStuct(s interface{}, r io.Reader) error  {
+func JSONToStuct(r io.Reader, s interface{}) error  {
 	return json.NewDecoder(r).Decode(&s)
 }
