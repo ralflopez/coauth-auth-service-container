@@ -44,3 +44,7 @@ func (service *UserService) GetUsers() ([]db.User, error) {
 func (service *UserService) GetUser(id string) (*db.User, error) {
 	return service.repo.GetUser(id)
 }
+
+func (service *UserService) DeleteUser(id string) error {
+	return service.repo.DeleteUser(id)
+}

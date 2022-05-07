@@ -15,5 +15,5 @@ func RegisterRoutes(s *server.Server, di *di.DIContainer) {
 	user.HandleFunc("", di.UserHandler.HandleUsersGet).Methods(http.MethodGet)
 	user.HandleFunc("", di.UserHandler.HandleUserCreate).Methods(http.MethodPost)
 	// user.HandleFunc("/{id}", controllers.UpdateUser).Methods(http.MethodPut)
-	// user.HandleFunc("/{id}", controllers.DeleteUser).Methods(http.MethodDelete)
+	user.HandleFunc("/{id}", di.UserHandler.HandleUserDelete).Methods(http.MethodDelete)
 }

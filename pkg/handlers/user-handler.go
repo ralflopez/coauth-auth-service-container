@@ -119,3 +119,26 @@ func (handler *UserHandler) HandleUserGet(w http.ResponseWriter, r *http.Request
 	handler.s.Logger.Printf("Response: %v\n", userDto)
 	handler.s.Respond(w, userDto, http.StatusOK)
 }
+
+func (handler *UserHandler) HandleUserDelete(w http.ResponseWriter, r *http.Request) {
+	// Get Id path variable
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		handler.s.Logger.Println("Id Parameter Doesnt Exist")
+		exceptions.ThrowBadRequestException(w, "Id Parameter Doesnt Exist")
+		return
+	}
+	handler.s.Logger.Printf("Path Variable Id: %v\n", id)
+
+	// Fetch
+	err := handler.service.DeleteUser(id)
+	if err != nil {
+		handler.s.Logger.Printf("Fetch Error: %v", err.Error())
+		exceptions.ThrowBadRequestException(w, err.Error())
+		return
+	}
+
+	handler.s.Logger.Printf("Response: %v\n", id)
+	handler.s.Respond(w, id, http.StatusOK)
+}

@@ -49,3 +49,17 @@ func (repo *UserRepository) GetUser(id string) (*db.User, error) {
 	
 	return &user, nil
 }
+
+func (repo *UserRepository) DeleteUser(id string) error {
+	uuid, err := uuid.Parse(id)
+	if err != nil {
+		return err
+	}
+
+	err = repo.queries.DeleteUser(repo.ctx, uuid)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
