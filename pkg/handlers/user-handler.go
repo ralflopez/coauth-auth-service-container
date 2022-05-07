@@ -24,12 +24,13 @@ func (handler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var role db.Role
 
 	// Unmarshal
-	// utils.JSONToStuct(r.Body, &createUserDTO)
 	handler.s.Decode(w, r, &createUserDTO)
+	handler.s.Logger.Printf("Request Body: %v\n", createUserDTO)
 
 	// Validate: JSON
 	err := utils.ValidateStruct(&createUserDTO)
 	if err != nil {
+		handler.s.Logger.Printf("Validation Error: %v\n", err.Error())
 		exceptions.ThrowBadRequestException(w, err.Error())
 		return
 	}
@@ -37,6 +38,7 @@ func (handler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	// Validate: Role
 	err = role.Scan(createUserDTO.Role)
 	if err != nil {
+		handler.s.Logger.Printf("Validation Error: %v\n", err.Error())
 		exceptions.ThrowBadRequestException(w, err.Error())
 		return
 	}
@@ -48,15 +50,18 @@ func (handler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	// Persist
 	user, err := handler.service.CreateUser(&createUserDTO)
 	if err != nil {
+		handler.s.Logger.Printf("Persistence Error: %v\n", err.Error())
 		exceptions.ThrowInternalServerError(w, err.Error())
 		return
 	}
 	
 	// Return as DTO
-	handler.s.Respond(w, &userdto.UserDTO{
+	response := &userdto.UserDTO{
 		Id: user.ID.String(),
 		Name: user.Name,
 		Email: user.Email,
 		Role: string(user.Role),
-	}, http.StatusOK)
+	}
+	handler.s.Logger.Printf("Response: %v\n", response)
+	handler.s.Respond(w, response, http.StatusOK)
 }
