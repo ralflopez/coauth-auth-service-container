@@ -11,6 +11,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 )
 
 func main() {
@@ -28,10 +29,13 @@ func run() error {
 	}
 	defer db.Close()
 
+	// Session Store
+	var sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+
 	// Server
 	r := mux.NewRouter()
 	l := log.New(os.Stdout, "[User API] ", log.LstdFlags)
-	s := server.NewServer(r, queries, l)
+	s := server.NewServer(r, queries, l, sessionStore)
 	di := di.NewDIContainer(s)
 
 	// Routes
