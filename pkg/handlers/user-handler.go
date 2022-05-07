@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"coauth/pkg/config/server"
 	"coauth/pkg/db"
 	"coauth/pkg/dtos/userdto"
 	"coauth/pkg/exceptions"
@@ -10,11 +11,12 @@ import (
 )
 
 type UserHandler struct {
+	s *server.Server
 	service *services.UserService
 }
 
-func NewUserHandler(service *services.UserService) *UserHandler {
-	return &UserHandler{service}
+func NewUserHandler(s *server.Server,service *services.UserService) *UserHandler {
+	return &UserHandler{s, service}
 }
 
 func (handler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +24,8 @@ func (handler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var role db.Role
 
 	// Unmarshal
-	utils.JSONToStuct(r.Body, &createUserDTO)
+	// utils.JSONToStuct(r.Body, &createUserDTO)
+	handler.s.Decode(w, r, &createUserDTO)
 
 	// Validate: JSON
 	err := utils.ValidateStruct(&createUserDTO)
@@ -50,10 +53,10 @@ func (handler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	// Return as DTO
-	utils.StructToJSON(w, &userdto.UserDTO{
+	handler.s.Respond(w, &userdto.UserDTO{
 		Id: user.ID.String(),
 		Name: user.Name,
 		Email: user.Email,
 		Role: string(user.Role),
-	})
+	}, http.StatusOK)
 }

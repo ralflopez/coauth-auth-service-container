@@ -17,9 +17,9 @@ type DIContainer struct {
 
 func NewDIContainer(s *server.Server) *DIContainer {
 	// user
-	userRepo := repository.NewUserRepository(context.Background(), s.DB)
-	userService := services.NewUserService(userRepo)
-	userHandler := handlers.NewUserHandler(userService)
+	userRepo := repository.NewUserRepository(s, context.Background(), s.DB)
+	userService := services.NewUserService(s, userRepo)
+	userHandler := handlers.NewUserHandler(s, userService)
 	
 	return &DIContainer{
 		userHandler,
