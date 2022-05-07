@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"coauth/pkg/config/server"
-	"coauth/pkg/db"
 	"coauth/pkg/dtos/userdto"
 	"coauth/pkg/exceptions"
 	"coauth/pkg/services"
@@ -23,7 +22,7 @@ func NewUserHandler(s *server.Server,service *services.UserService) *UserHandler
 
 func (handler *UserHandler) HandleUserCreate(w http.ResponseWriter, r *http.Request) {
 	var createUserDTO userdto.CreateUserDTO
-	var role db.Role
+	// var role db.Role
 
 	// Unmarshal
 	handler.s.Decode(w, r, &createUserDTO)
@@ -36,18 +35,6 @@ func (handler *UserHandler) HandleUserCreate(w http.ResponseWriter, r *http.Requ
 		exceptions.ThrowBadRequestException(w, err.Error())
 		return
 	}
-
-	// Validate: Role
-	err = role.Scan(createUserDTO.Role)
-	if err != nil {
-		handler.s.Logger.Printf("Validation Error: %v\n", err.Error())
-		exceptions.ThrowBadRequestException(w, err.Error())
-		return
-	}
-	if role == "" {
-		role = db.RoleMember
-	}
-	createUserDTO.Role = string(role)
 
 	// Persist
 	user, err := handler.service.CreateUser(&createUserDTO)

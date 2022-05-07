@@ -20,7 +20,16 @@ func NewUserService(s *server.Server, repo *repository.UserRepository) *UserServ
 
 func (service *UserService) CreateUser(dto *userdto.CreateUserDTO) (*db.User, error) {
 	var role db.Role
-	role.Scan(dto.Role)
+
+	// Validate Role
+	err := role.Scan(dto.Role)
+	if err != nil {
+		return nil, err
+	}
+	if role == "" {
+		role = db.RoleMember
+	}
+	dto.Role = string(role)
 
 	// Persist
 	user, err := service.repo.CreateUser(&db.CreateUserParams{
