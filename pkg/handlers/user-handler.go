@@ -8,6 +8,8 @@ import (
 	"coauth/pkg/services"
 	"coauth/pkg/utils"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type UserHandler struct {
@@ -87,4 +89,33 @@ func (handler *UserHandler) HandleUsersGet(w http.ResponseWriter, r *http.Reques
 	}
 
 	handler.s.Respond(w, dtos, http.StatusOK)
+}
+
+func (handler *UserHandler) HandleUserGet(w http.ResponseWriter, r *http.Request) {
+	// Get Id path variable
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		exceptions.ThrowBadRequestException(w, "Id Parameter Doesnt Exist")
+		return
+	}
+	handler.s.Logger.Printf("Path Variable Id: %v\n", id)
+
+	// Fetch
+	user, err := handler.service.GetUser(id)
+	if err != nil {
+		handler.s.Logger.Printf("Fetch Error: %v\n", err.Error())
+		exceptions.ThrowInternalServerError(w, err.Error())
+		return
+	}
+
+	// Convert to DTO
+	userDto := &userdto.UserDTO{
+		Id: user.ID.String(),
+		Name: user.Name,
+		Email: user.Email,
+		Role: string(user.Role),
+	}
+	handler.s.Logger.Printf("Response: %v\n", userDto)
+	handler.s.Respond(w, userDto, http.StatusOK)
 }

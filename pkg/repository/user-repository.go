@@ -4,6 +4,8 @@ import (
 	"coauth/pkg/config/server"
 	"coauth/pkg/db"
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type UserRepository struct {
@@ -32,4 +34,18 @@ func (repo *UserRepository) GetAllUsers() ([]db.User, error) {
 	}
 
 	return users, nil
+}
+
+func (repo *UserRepository) GetUser(id string) (*db.User, error) {
+	uuid, err := uuid.Parse(id)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := repo.queries.GetUser(repo.ctx, uuid)
+	if err != nil {
+		return nil, err
+	}
+	
+	return &user, nil
 }

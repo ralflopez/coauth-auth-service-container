@@ -40,3 +40,7 @@ func (service *UserService) CreateUser(dto *userdto.CreateUserDTO) (*db.User, er
 func (service *UserService) GetUsers() ([]db.User, error) {
 	return service.repo.GetAllUsers()
 }
+
+func (service *UserService) GetUser(id string) (*db.User, error) {
+	return service.repo.GetUser(id)
+}
