@@ -19,7 +19,7 @@ func NewUserHandler(s *server.Server,service *services.UserService) *UserHandler
 	return &UserHandler{s, service}
 }
 
-func (handler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (handler *UserHandler) HandleUserCreate(w http.ResponseWriter, r *http.Request) {
 	var createUserDTO userdto.CreateUserDTO
 	var role db.Role
 
@@ -64,4 +64,27 @@ func (handler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	handler.s.Logger.Printf("Response: %v\n", response)
 	handler.s.Respond(w, response, http.StatusOK)
+}
+
+func (handler *UserHandler) HandleUsersGet(w http.ResponseWriter, r *http.Request) {
+	users, err := handler.service.GetUsers()
+	if err != nil {
+		handler.s.Logger.Printf("Fetch Error: %v", err.Error())
+		exceptions.ThrowInternalServerError(w, err.Error())
+		return
+	}
+
+	// Convert to DTO
+	dtos := []userdto.UserDTO{}
+	for _, user := range users {
+		userDto := &userdto.UserDTO{
+			Id: user.ID.String(),
+			Name: user.Name,
+			Email: user.Email,
+			Role: string(user.Role),
+		}
+		dtos = append(dtos, *userDto)
+	}
+
+	handler.s.Respond(w, dtos, http.StatusOK)
 }
