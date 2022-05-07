@@ -50,6 +50,15 @@ func (repo *UserRepository) GetUser(id string) (*db.User, error) {
 	return &user, nil
 }
 
+func (repo *UserRepository) GetUserByEmail(email string) (*db.User, error) {
+	user, err := repo.queries.GetUserByEmail(repo.ctx, email)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func (repo *UserRepository) DeleteUser(id string) error {
 	uuid, err := uuid.Parse(id)
 	if err != nil {
