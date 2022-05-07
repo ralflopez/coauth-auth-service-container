@@ -1,43 +1,36 @@
 package services
 
 import (
-	"coauth/pkg/models"
-	"coauth/pkg/utils"
+	"coauth/pkg/db"
+	"coauth/pkg/dtos/userdto"
+	"coauth/pkg/repository"
 
 	"github.com/google/uuid"
 )
 
-var users []*models.User = []*models.User{}
-
-func GetUsers() []*models.User {
-	return users
+type UserService struct {
+	repo *repository.UserRepository
 }
 
-func GetUser(id string) *models.User {
-	return &models.User{}
+func NewUserService(repo *repository.UserRepository) *UserService{
+	return &UserService{repo}
 }
 
-func CreateUser(u *models.User) error {
-	var err error
+func (u *UserService) CreateUser(dto *userdto.CreateUserDTO) (*db.User, error) {
+	var role db.Role
+	role.Scan(dto.Role)
 
-	u.Id = uuid.NewString()
-	if u.Role == "" {
-		u.Role = models.Member
-	}
-	u.Password, err = utils.HashPassword(u.Password)
+	// Persist
+	user, err := u.repo.CreateUser(&db.CreateUserParams{
+		ID: uuid.New(),
+		Name: dto.Name,
+		Email: dto.Email,
+		Password: dto.Password,
+		Role: role,
+	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	users = append(users, u)
-	
-	return nil
-}
-
-func UpdateUser(u *models.User) error {
-	return nil
-}
-
-func DelteUser(u *models.User) error {
-	return nil
+	return user, nil
 }
