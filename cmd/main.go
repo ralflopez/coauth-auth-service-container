@@ -11,7 +11,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
-	"github.com/gorilla/sessions"
+	redisstore "gopkg.in/boj/redistore.v1"
 )
 
 func main() {
@@ -30,7 +30,12 @@ func run() error {
 	defer db.Close()
 
 	// Session Store
-	var sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	// var sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	sessionStore, err := redisstore.NewRediStore(10, "tcp", ":63791", "eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81", []byte("secret-key"))
+	if err != nil {
+		panic(err)
+	}
+	defer sessionStore.Close()
 
 	// Server
 	r := mux.NewRouter()

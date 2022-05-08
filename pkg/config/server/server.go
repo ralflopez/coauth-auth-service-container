@@ -21,7 +21,7 @@ type Server struct {
 	SessionStore sessions.Store
 }
 
-func NewServer(r *mux.Router, db *db.Queries, logger *log.Logger, session *sessions.CookieStore) *Server {
+func NewServer(r *mux.Router, db *db.Queries, logger *log.Logger, session sessions.Store) *Server {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "9000"
