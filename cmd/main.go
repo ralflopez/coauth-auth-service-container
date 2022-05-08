@@ -11,6 +11,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 	redisstore "gopkg.in/boj/redistore.v1"
 )
 
@@ -22,6 +23,12 @@ func main() {
 }
 
 func run() error {
+	// Env
+	err := godotenv.Load()
+  	if err != nil {
+  	  log.Fatal("Error loading .env file")
+  	}
+
 	// Database
 	db, queries, err := db.StartDB()
 	if err != nil {
@@ -31,7 +38,9 @@ func run() error {
 
 	// Session Store
 	// var sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-	sessionStore, err := redisstore.NewRediStore(10, "tcp", ":63791", "eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81", []byte("secret-key"))
+	sessionStorePort := ":" + os.Getenv("REDIS_PORT")
+	sessionStorePassword := os.Getenv("REDIS_PASSWORD")
+	sessionStore, err := redisstore.NewRediStore(10, "tcp", sessionStorePort, sessionStorePassword, []byte("secret-key"))
 	if err != nil {
 		panic(err)
 	}

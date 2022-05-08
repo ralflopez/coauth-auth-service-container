@@ -3,12 +3,17 @@ package config
 import (
 	"coauth/pkg/db"
 	"database/sql"
+	"fmt"
+	"os"
 
 	_ "github.com/lib/pq"
 )
 
 func StartDB() (*sql.DB, *db.Queries, error) {
-	database, err := sql.Open("postgres", "user=user password=password dbname=coauth sslmode=disable")
+	user := os.Getenv("DATABASE_USER")
+	password := os.Getenv("DATABASE_PASSWORD")
+	name := os.Getenv("DATABASE_NAME")
+	database, err := sql.Open("postgres", fmt.Sprintf("user=%v password=%v dbname=%v sslmode=disable", user, password, name))
 	if err != nil {
 		return nil, nil, err
 	}
