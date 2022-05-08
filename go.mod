@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/garyburd/redigo v1.6.3 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
@@ -18,4 +19,5 @@ require (
 	github.com/lib/pq v1.10.5 // indirect
 	golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069 // indirect
 	golang.org/x/text v0.3.7 // indirect
+	gopkg.in/boj/redistore.v1 v1.0.0-20160128113310-fc113767cd6b // indirect
 )
