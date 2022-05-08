@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"coauth/pkg/config/server"
+	"coauth/pkg/dtos/sessiondto"
 	"coauth/pkg/dtos/userdto"
 	"coauth/pkg/exceptions"
 	"coauth/pkg/services"
+	"coauth/pkg/utils"
 	"net/http"
 )
 
@@ -18,7 +20,35 @@ func NewSessionHandler(s *server.Server, service *services.SessionService) *Sess
 }
 
 func (handler *SessionHandler) HandleSessionLogin(w http.ResponseWriter, r *http.Request) {
-	
+	var loginDTO sessiondto.LoginDTO
+	handler.s.Decode(w, r, &loginDTO)
+
+	handler.s.Logger.Printf("Request Body: %v\n", loginDTO)
+
+	// Validation
+	err := utils.ValidateStruct(&loginDTO)
+	if err != nil {
+		handler.s.Logger.Printf("Validation Error: %v\n", err.Error())
+		exceptions.ThrowBadRequestException(w, err.Error())
+		return
+	}
+
+	// Fetch
+	user, err := handler.sessionService.Login(w, r, &loginDTO)
+	if err != nil {
+		handler.s.Logger.Printf("Fetch Error: %v", err.Error())
+		exceptions.ThrowBadRequestException(w, err.Error())
+		return
+	}
+
+	userDTO := &userdto.UserDTO{
+		Id: user.ID.String(),
+		Name: user.Name,
+		Email: user.Email,
+		Role: string(user.Role),
+	}
+
+	handler.s.Respond(w, userDTO, http.StatusOK)
 }
 
 func (handler *SessionHandler) HandleSessionSignup(w http.ResponseWriter, r *http.Request) {
