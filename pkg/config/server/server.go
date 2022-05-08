@@ -18,7 +18,7 @@ type Server struct {
 	Router *mux.Router
 	DB *db.Queries
 	Logger *log.Logger
-	SessionStore *sessions.CookieStore
+	SessionStore sessions.Store
 }
 
 func NewServer(r *mux.Router, db *db.Queries, logger *log.Logger, session *sessions.CookieStore) *Server {
