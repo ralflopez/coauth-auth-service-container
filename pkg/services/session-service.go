@@ -81,3 +81,22 @@ func (service *SessionService) Logout(w http.ResponseWriter, r *http.Request) er
 
 	return nil
 }
+
+func (service *SessionService) GetLoggedInUser(w http.ResponseWriter, r *http.Request) (*db.User, error) {
+	session, err := service.s.SessionStore.Get(r, "user-session")
+	if err != nil {
+		return nil, err
+	}
+
+	val, ok := session.Values["userId"].(string)
+	if !ok {
+		return nil, fmt.Errorf("unauthorized")
+	}
+
+	user, err := service.userService.GetUser(val)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}

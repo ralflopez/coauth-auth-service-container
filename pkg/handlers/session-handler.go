@@ -78,10 +78,28 @@ func (handler *SessionHandler) HandleSessionSignup(w http.ResponseWriter, r *htt
 func (handler *SessionHandler) HandleSessionLogout(w http.ResponseWriter, r *http.Request) {
 	err := handler.sessionService.Logout(w, r)
 	if err != nil {
-		handler.s.Logger.Panicf("Session Error: %v\n", err.Error())
+		handler.s.Logger.Printf("Session Error: %v\n", err.Error())
 		exceptions.ThrowInternalServerError(w, err.Error())
 		return
 	}
 
 	handler.s.Respond(w, nil, http.StatusOK)
+}
+
+func (handler *SessionHandler) HandleSessionUser(w http.ResponseWriter, r *http.Request) {
+	user, err := handler.sessionService.GetLoggedInUser(w, r)
+	if err != nil {
+		handler.s.Logger.Printf("Session Error: %v\n", err.Error())
+		exceptions.ThrowForbiddenException(w, err.Error())
+		return
+	}
+
+	userDTO := &userdto.UserDTO{
+		Id: user.ID.String(),
+		Name: user.Name,
+		Email: user.Email,
+		Role: string(user.Role),
+	}
+
+	handler.s.Respond(w, userDTO, http.StatusOK)
 }
