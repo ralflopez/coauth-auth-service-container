@@ -42,5 +42,20 @@ func (service *SessionService) Signup(w http.ResponseWriter, r *http.Request, dt
 		return nil, err
 	}
 
-	return nil, nil
+	return user, nil
+}
+
+func (service *SessionService) Logout(w http.ResponseWriter, r *http.Request) error {
+	session, err := service.s.SessionStore.Get(r, "user-session")
+	if err != nil {
+		return err
+	}
+	session.Options.MaxAge = -1
+	delete(session.Values, "userId")
+	err = session.Save(r, w)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

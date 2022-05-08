@@ -13,6 +13,7 @@ func RegisterRoutes(s *server.Server, di *di.DIContainer) {
 	sessionAuth := s.Router.PathPrefix("/session").Subrouter().StrictSlash(false)
 	// sessionAuth.HandleFunc("/login").Methods(http.MethodPost)
 	sessionAuth.HandleFunc("/signup", di.SessionHandler.HandleSessionSignup).Methods(http.MethodPost)
+	sessionAuth.HandleFunc("/logout", di.SessionHandler.HandleSessionLogout).Methods(http.MethodPost)
 	// sessionAuth.HandleFunc("/user").Methods(http.MethodGet)
 
 	// Users

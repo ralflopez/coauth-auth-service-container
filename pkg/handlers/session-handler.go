@@ -17,9 +17,9 @@ func NewSessionHandler(s *server.Server, service *services.SessionService) *Sess
 	return &SessionHandler{s, service}
 }
 
-// func (handler *SessionHandler) HandleSessionLogin(w http.ResponseWriter, r *http.Request) {
+func (handler *SessionHandler) HandleSessionLogin(w http.ResponseWriter, r *http.Request) {
 	
-// }
+}
 
 func (handler *SessionHandler) HandleSessionSignup(w http.ResponseWriter, r *http.Request) {
 	var createUserDTO *userdto.CreateUserDTO
@@ -43,4 +43,15 @@ func (handler *SessionHandler) HandleSessionSignup(w http.ResponseWriter, r *htt
 	}
 
 	handler.s.Respond(w, userdto, http.StatusOK)
+}
+
+func (handler *SessionHandler) HandleSessionLogout(w http.ResponseWriter, r *http.Request) {
+	err := handler.sessionService.Logout(w, r)
+	if err != nil {
+		handler.s.Logger.Panicf("Session Error: %v\n", err.Error())
+		exceptions.ThrowInternalServerError(w, err.Error())
+		return
+	}
+
+	handler.s.Respond(w, nil, http.StatusOK)
 }
