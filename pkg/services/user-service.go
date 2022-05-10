@@ -5,6 +5,7 @@ import (
 	"coauth/pkg/db"
 	"coauth/pkg/dtos/userdto"
 	"coauth/pkg/repository"
+	"coauth/pkg/utils"
 
 	"github.com/google/uuid"
 )
@@ -32,11 +33,15 @@ func (service *UserService) CreateUser(dto *userdto.CreateUserDTO) (*db.User, er
 	dto.Role = string(role)
 
 	// Persist
+	passwordHash, err := utils.HashPassword(dto.Password)
+	if err != nil {
+		return nil, err
+	}
 	user, err := service.repo.CreateUser(&db.CreateUserParams{
 		ID: uuid.New(),
 		Name: dto.Name,
 		Email: dto.Email,
-		Password: dto.Password,
+		Password: passwordHash,
 		Role: role,
 	})
 	if err != nil {

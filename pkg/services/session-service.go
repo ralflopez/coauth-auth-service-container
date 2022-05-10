@@ -5,6 +5,7 @@ import (
 	"coauth/pkg/db"
 	"coauth/pkg/dtos/sessiondto"
 	"coauth/pkg/dtos/userdto"
+	"coauth/pkg/utils"
 	"fmt"
 	"net/http"
 )
@@ -22,7 +23,13 @@ func (service *SessionService) Login(w http.ResponseWriter, r *http.Request, dto
 	// Find in DB
 	user, err := service.userService.GetUserByEmail(dto.Email)
 	if err != nil {
-		return nil, fmt.Errorf("user doesn't exist")
+		return nil, fmt.Errorf("incorrect email / password")
+	}
+
+	// Check hash
+	match := utils.CheckPasswordHash(dto.Password, user.Password)
+	if !match {
+		return nil, fmt.Errorf("incorrect email / password")
 	}
 
 	// Save in Session
