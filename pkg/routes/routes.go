@@ -5,6 +5,7 @@ import (
 
 	"coauth/pkg/config/di"
 	"coauth/pkg/config/server"
+	"coauth/pkg/middlewares"
 )
 
 func RegisterRoutes(s *server.Server, di *di.DIContainer) {
@@ -15,6 +16,9 @@ func RegisterRoutes(s *server.Server, di *di.DIContainer) {
 	sessionAuth.HandleFunc("/signup", di.SessionHandler.HandleSessionSignup).Methods(http.MethodPost)
 	sessionAuth.HandleFunc("/logout", di.SessionHandler.HandleSessionLogout).Methods(http.MethodPost)
 	sessionAuth.HandleFunc("/user", di.SessionHandler.HandleSessionUser).Methods(http.MethodGet)
+	sessionAuth.Use(func(h http.Handler) http.Handler {
+		return middlewares.WithUserMiddleware(h, di)
+	})
 
 	// Users
 	user := s.Router.PathPrefix("/users").Subrouter().StrictSlash(false)

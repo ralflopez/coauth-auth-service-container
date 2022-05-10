@@ -15,7 +15,7 @@ type DIContainer struct {
 	userRepository *repository.UserRepository
 
 	SessionHandler *handlers.SessionHandler
-	sessionService *services.SessionService
+	SessionService *services.SessionService
 }
 
 func NewDIContainer(s *server.Server) *DIContainer {
