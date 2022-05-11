@@ -16,6 +16,9 @@ type DIContainer struct {
 
 	SessionHandler *handlers.SessionHandler
 	SessionService *services.SessionService
+
+	JwtHandler *handlers.JwtHandler
+	jwtService *services.JwtService
 }
 
 func NewDIContainer(s *server.Server) *DIContainer {
@@ -27,6 +30,10 @@ func NewDIContainer(s *server.Server) *DIContainer {
 	// session
 	sessionService := services.NewSessionService(s, userService)
 	sessionHandler := handlers.NewSessionHandler(s, sessionService)
+
+	// jwt
+	jwtService := services.NewJwtService(s, userService)
+	jwtHandler := handlers.NewJwtHandler(s, jwtService)
 	
 	return &DIContainer{
 		userHandler,
@@ -34,5 +41,7 @@ func NewDIContainer(s *server.Server) *DIContainer {
 		userRepo,
 		sessionHandler,
 		sessionService,
+		jwtHandler,
+		jwtService,
 	}
 }

@@ -9,7 +9,6 @@ import (
 )
 
 func RegisterRoutes(s *server.Server, di *di.DIContainer) {
-
 	// Session Authentication
 	sessionAuth := s.Router.PathPrefix("/session").Subrouter().StrictSlash(false)
 	sessionAuth.HandleFunc("/login", di.SessionHandler.HandleSessionLogin).Methods(http.MethodPost)
@@ -20,6 +19,10 @@ func RegisterRoutes(s *server.Server, di *di.DIContainer) {
 		return middlewares.WithUserMiddleware(h, di)
 	})
 
+	// Jwt Authentication
+	jwtAuth := s.Router.PathPrefix("/jwt").Subrouter().StrictSlash(false)
+	jwtAuth.HandleFunc("/signup", di.JwtHandler.HandleJwtSignup).Methods(http.MethodPost)
+	// jwtAuth.HandleFunc("/user", di.JwtHandler.HandleJwtUser).Methods(http.MethodGet)
 	// Users
 	user := s.Router.PathPrefix("/users").Subrouter().StrictSlash(false)
 	user.HandleFunc("/{id}", di.UserHandler.HandleUserGet).Methods(http.MethodGet)
