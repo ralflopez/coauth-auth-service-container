@@ -46,42 +46,21 @@ func (handler *JwtHandler) HandleJwtSignup(w http.ResponseWriter, r *http.Reques
 	handler.s.Respond(w, jwtResponse, http.StatusOK)
 }
 
-// func (handler *JwtHandler) HandleJwtUser(w http.ResponseWriter, r *http.Request) {
-// 	// Get from jwt token
-// 	reqToken := r.Header.Get("Authorization")
-// 	splitToken := strings.Split(reqToken, "Bearer ")
-// 	jwtFromHeader := splitToken[1]
-
-// 	handler.s.Logger.Printf("Received jwt: %v\n", jwtFromHeader)
-
-// 	// Parse
-// 	token, err := jwt.ParseWithClaims(jwtFromHeader, &CustomClaims{}, func(t *jwt.Token) (interface{}, error) {
-// 		return []byte("secret"), nil
-// 	})
-// 	if err != nil {
-// 		handler.s.Logger.Printf("Parsing error: %v\n", err.Error())
-// 		exceptions.ThrowBadRequestException(w, "jwt tampered")
-// 		return
-// 	}
-
-// 	// Extract claims
-// 	claims, ok := token.Claims.(*CustomClaims)
-// 	if !ok {
-// 		handler.s.Logger.Printf("Error extracting claims")
-// 		exceptions.ThrowInternalServerError(w, "error extracting claims")
-// 		return
-// 	}
-
-// 	// Check
-// 	if claims.ExpiresAt < time.Now().UTC().Unix() {
-// 		handler.s.Logger.Printf("Jwt expired")
-// 		exceptions.ThrowInternalServerError(w, "jwt expired")
-// 		return
-// 	}
-
-// 	// Extract value
-// 	userId := claims.UserId
-// 	handler.s.Logger.Printf("UserId: %v\n", userId)
+func (handler *JwtHandler) HandleJwtUser(w http.ResponseWriter, r *http.Request) {
 	
-// 	handler.s.Respond(w, userId, http.StatusOK)
-// }
+	user, err := handler.jwtService.GetLoggedInUser(r)
+	if err != nil {
+		handler.s.Logger.Printf("Jwt error: %v\n", err.Error())
+		exceptions.ThrowInternalServerError(w, err.Error())
+		return
+	}
+
+	userDTO := &userdto.UserDTO{
+		Id: user.ID.String(),
+		Name: user.Name,
+		Email: user.Email,
+		Role: string(user.Role),
+	}
+
+	handler.s.Respond(w, userDTO, http.StatusOK)
+}

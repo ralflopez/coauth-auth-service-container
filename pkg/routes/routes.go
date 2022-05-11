@@ -22,7 +22,8 @@ func RegisterRoutes(s *server.Server, di *di.DIContainer) {
 	// Jwt Authentication
 	jwtAuth := s.Router.PathPrefix("/jwt").Subrouter().StrictSlash(false)
 	jwtAuth.HandleFunc("/signup", di.JwtHandler.HandleJwtSignup).Methods(http.MethodPost)
-	// jwtAuth.HandleFunc("/user", di.JwtHandler.HandleJwtUser).Methods(http.MethodGet)
+	jwtAuth.HandleFunc("/user", di.JwtHandler.HandleJwtUser).Methods(http.MethodGet)
+
 	// Users
 	user := s.Router.PathPrefix("/users").Subrouter().StrictSlash(false)
 	user.HandleFunc("/{id}", di.UserHandler.HandleUserGet).Methods(http.MethodGet)
