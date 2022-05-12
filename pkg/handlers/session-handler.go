@@ -7,6 +7,7 @@ import (
 	"coauth/pkg/exceptions"
 	"coauth/pkg/services"
 	"coauth/pkg/utils"
+	"fmt"
 	"net/http"
 )
 
@@ -29,7 +30,7 @@ func (handler *SessionHandler) HandleSessionLogin(w http.ResponseWriter, r *http
 	err := utils.ValidateStruct(&loginDTO)
 	if err != nil {
 		handler.s.Logger.Printf("Validation Error: %v\n", err.Error())
-		exceptions.ThrowBadRequestException(w, err.Error())
+		exceptions.ThrowBadRequestException(w, fmt.Sprintf("Validation error: %v\n", err.Error()))
 		return
 	}
 
@@ -37,7 +38,7 @@ func (handler *SessionHandler) HandleSessionLogin(w http.ResponseWriter, r *http
 	user, err := handler.sessionService.Login(w, r, &loginDTO)
 	if err != nil {
 		handler.s.Logger.Printf("Fetch Error: %v", err.Error())
-		exceptions.ThrowBadRequestException(w, err.Error())
+		exceptions.ThrowBadRequestException(w, fmt.Sprintf("Fetch error: %v\n", err.Error()))
 		return
 	}
 
@@ -61,7 +62,7 @@ func (handler *SessionHandler) HandleSessionSignup(w http.ResponseWriter, r *htt
 	user, err := handler.sessionService.Signup(w, r, createUserDTO)
 	if err != nil {
 		handler.s.Logger.Printf("Persistence Error: %v\n", err.Error())
-		exceptions.ThrowInternalServerError(w, err.Error())
+		exceptions.ThrowInternalServerError(w, fmt.Sprintf("Persistence error: %v\n", err.Error()))
 		return
 	}
 
@@ -79,7 +80,7 @@ func (handler *SessionHandler) HandleSessionLogout(w http.ResponseWriter, r *htt
 	err := handler.sessionService.Logout(w, r)
 	if err != nil {
 		handler.s.Logger.Printf("Session Error: %v\n", err.Error())
-		exceptions.ThrowInternalServerError(w, err.Error())
+		exceptions.ThrowInternalServerError(w, fmt.Sprintf("Session error: %v\n", err.Error()))
 		return
 	}
 
@@ -90,7 +91,7 @@ func (handler *SessionHandler) HandleSessionUser(w http.ResponseWriter, r *http.
 	user, err := handler.sessionService.GetLoggedInUser(w, r)
 	if err != nil {
 		handler.s.Logger.Printf("Session Error: %v\n", err.Error())
-		exceptions.ThrowForbiddenException(w, err.Error())
+		exceptions.ThrowForbiddenException(w, fmt.Sprintf("Session error: %v\n", err.Error()))
 		return
 	}
 

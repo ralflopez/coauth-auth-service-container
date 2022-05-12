@@ -6,6 +6,7 @@ import (
 	"coauth/pkg/dtos/userdto"
 	"coauth/pkg/exceptions"
 	"coauth/pkg/services"
+	"fmt"
 	"net/http"
 )
 
@@ -24,7 +25,7 @@ func (handler *JwtHandler) HandleJwtSignup(w http.ResponseWriter, r *http.Reques
 
 	if createUserDTO == nil {
 		handler.s.Logger.Printf("request body invalid")
-		exceptions.ThrowInternalServerError(w, "Token generation error")
+		exceptions.ThrowInternalServerError(w, "Request body invalid")
 		return
 	}
 
@@ -33,14 +34,14 @@ func (handler *JwtHandler) HandleJwtSignup(w http.ResponseWriter, r *http.Reques
 	user, err := handler.jwtService.Signup(createUserDTO)
 	if err != nil {
 		handler.s.Logger.Printf("User Creation Error: %v\n", err.Error())
-		exceptions.ThrowInternalServerError(w, "Token generation error")
+		exceptions.ThrowInternalServerError(w, fmt.Sprintf("Signup error: %v\n", err.Error()))
 		return
 	}
 
 	jwtResponse, err := handler.jwtService.GenerateTokens(user.ID.String())
 	if err != nil {
 		handler.s.Logger.Printf("Token Generator Error: %v\n", err.Error())
-		exceptions.ThrowInternalServerError(w, "Token generation error")
+		exceptions.ThrowInternalServerError(w, fmt.Sprintf("Token generation error: %v\n", err.Error()))
 		return
 	}
 
@@ -53,7 +54,7 @@ func (handler *JwtHandler) HandleJwtLogin(w http.ResponseWriter, r *http.Request
 
 	if loginDTO == nil {
 		handler.s.Logger.Printf("request body invalid")
-		exceptions.ThrowInternalServerError(w, "Token generation error")
+		exceptions.ThrowInternalServerError(w, "Request body invalid")
 		return
 	}
 
@@ -61,15 +62,15 @@ func (handler *JwtHandler) HandleJwtLogin(w http.ResponseWriter, r *http.Request
 	
 	user, err := handler.jwtService.Login(loginDTO)
 	if err != nil {
-		handler.s.Logger.Printf("User Creation Error: %v\n", err.Error())
-		exceptions.ThrowInternalServerError(w, "Token generation error")
+		handler.s.Logger.Printf("Login Error: %v\n", err.Error())
+		exceptions.ThrowInternalServerError(w, fmt.Sprintf("Login error: %v\n", err.Error()))
 		return
 	}
 
 	jwtResponse, err := handler.jwtService.GenerateTokens(user.ID.String())
 	if err != nil {
 		handler.s.Logger.Printf("Token Generator Error: %v\n", err.Error())
-		exceptions.ThrowInternalServerError(w, "Token generation error")
+		exceptions.ThrowInternalServerError(w, fmt.Sprintf("Token generation error: %v\n", err.Error()))
 		return
 	}
 
