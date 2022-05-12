@@ -6,6 +6,7 @@ import (
 	"coauth/pkg/dtos/userdto"
 	"coauth/pkg/exceptions"
 	"coauth/pkg/services"
+	"coauth/pkg/utils"
 	"fmt"
 	"net/http"
 )
@@ -51,6 +52,14 @@ func (handler *JwtHandler) HandleJwtSignup(w http.ResponseWriter, r *http.Reques
 func (handler *JwtHandler) HandleJwtLogin(w http.ResponseWriter, r *http.Request) {
 	var loginDTO *sessiondto.LoginDTO
 	handler.s.Decode(w, r, &loginDTO)
+
+	// Validation
+	err := utils.ValidateStruct(&loginDTO)
+	if err != nil {
+		handler.s.Logger.Printf("Validation Error: %v\n", err.Error())
+		exceptions.ThrowBadRequestException(w, fmt.Sprintf("Validation error: %v\n", err.Error()))
+		return
+	}
 
 	if loginDTO == nil {
 		handler.s.Logger.Printf("request body invalid")

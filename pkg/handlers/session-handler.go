@@ -58,6 +58,13 @@ func (handler *SessionHandler) HandleSessionSignup(w http.ResponseWriter, r *htt
 
 	handler.s.Logger.Printf("Request Body: %v\n", createUserDTO)
 
+	// Validation
+	if createUserDTO == nil {
+		handler.s.Logger.Printf("request body invalid")
+		exceptions.ThrowInternalServerError(w, "Request body invalid")
+		return
+	}
+
 	// Persist
 	user, err := handler.sessionService.Signup(w, r, createUserDTO)
 	if err != nil {
