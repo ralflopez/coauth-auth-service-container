@@ -64,6 +64,13 @@ func (service *JwtService) GenerateTokens(userId string) (*jwtdto.JwtResponse, e
 }
 
 func (service *JwtService) Signup(dto *userdto.CreateUserDTO) (*db.User, error) {
+	// Validate Email
+	_, err := service.userService.GetUserByEmail(dto.Email)
+	if err == nil {
+		return nil, fmt.Errorf("email already taken")
+	}
+	
+	// Save to DB
 	user, err := service.userService.CreateUser(dto)
 	if err != nil {
 		return nil, err
