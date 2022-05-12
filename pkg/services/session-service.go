@@ -11,7 +11,7 @@ import (
 )
 
 type SessionService struct {
-	s *server.Server
+	s           *server.Server
 	userService *UserService
 }
 
@@ -53,7 +53,7 @@ func (service *SessionService) Signup(w http.ResponseWriter, r *http.Request, dt
 	if err == nil {
 		return nil, fmt.Errorf("email already taken")
 	}
-	
+
 	// Save to DB
 	user, err := service.userService.CreateUser(dto)
 	if err != nil {

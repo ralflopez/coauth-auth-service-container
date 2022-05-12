@@ -10,8 +10,8 @@ import (
 )
 
 type DIContainer struct {
-	UserHandler *handlers.UserHandler
-	userService *services.UserService
+	UserHandler    *handlers.UserHandler
+	userService    *services.UserService
 	userRepository *repository.UserRepository
 
 	SessionHandler *handlers.SessionHandler
@@ -34,7 +34,7 @@ func NewDIContainer(s *server.Server) *DIContainer {
 	// jwt
 	jwtService := services.NewJwtService(s, userService)
 	jwtHandler := handlers.NewJwtHandler(s, jwtService)
-	
+
 	return &DIContainer{
 		userHandler,
 		userService,

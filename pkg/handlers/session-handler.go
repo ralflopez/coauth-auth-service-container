@@ -12,7 +12,7 @@ import (
 )
 
 type SessionHandler struct {
-	s *server.Server
+	s              *server.Server
 	sessionService *services.SessionService
 }
 
@@ -43,10 +43,10 @@ func (handler *SessionHandler) HandleSessionLogin(w http.ResponseWriter, r *http
 	}
 
 	userDTO := &userdto.UserDTO{
-		Id: user.ID.String(),
-		Name: user.Name,
+		Id:    user.ID.String(),
+		Name:  user.Name,
 		Email: user.Email,
-		Role: string(user.Role),
+		Role:  string(user.Role),
 	}
 
 	handler.s.Respond(w, userDTO, http.StatusOK)
@@ -67,10 +67,10 @@ func (handler *SessionHandler) HandleSessionSignup(w http.ResponseWriter, r *htt
 	}
 
 	userdto := &userdto.UserDTO{
-		Id: user.ID.String(),
-		Name: user.Name,
+		Id:    user.ID.String(),
+		Name:  user.Name,
 		Email: user.Email,
-		Role: string(user.Role),
+		Role:  string(user.Role),
 	}
 
 	handler.s.Respond(w, userdto, http.StatusOK)
@@ -96,10 +96,10 @@ func (handler *SessionHandler) HandleSessionUser(w http.ResponseWriter, r *http.
 	}
 
 	userDTO := &userdto.UserDTO{
-		Id: user.ID.String(),
-		Name: user.Name,
+		Id:    user.ID.String(),
+		Name:  user.Name,
 		Email: user.Email,
-		Role: string(user.Role),
+		Role:  string(user.Role),
 	}
 
 	handler.s.Respond(w, userDTO, http.StatusOK)

@@ -11,11 +11,11 @@ import (
 )
 
 type UserService struct {
-	s *server.Server
+	s    *server.Server
 	repo *repository.UserRepository
 }
 
-func NewUserService(s *server.Server, repo *repository.UserRepository) *UserService{
+func NewUserService(s *server.Server, repo *repository.UserRepository) *UserService {
 	return &UserService{s, repo}
 }
 
@@ -38,11 +38,11 @@ func (service *UserService) CreateUser(dto *userdto.CreateUserDTO) (*db.User, er
 		return nil, err
 	}
 	user, err := service.repo.CreateUser(&db.CreateUserParams{
-		ID: uuid.New(),
-		Name: dto.Name,
-		Email: dto.Email,
+		ID:       uuid.New(),
+		Name:     dto.Name,
+		Email:    dto.Email,
 		Password: passwordHash,
-		Role: role,
+		Role:     role,
 	})
 	if err != nil {
 		return nil, err

@@ -8,7 +8,6 @@ import (
 	"net/http"
 )
 
-
 func WithUserMiddleware(next http.Handler, di *di.DIContainer) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user, err := di.SessionService.GetLoggedInUser(w, r)

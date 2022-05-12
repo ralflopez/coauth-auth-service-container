@@ -12,11 +12,11 @@ import (
 )
 
 type UserHandler struct {
-	s *server.Server
+	s       *server.Server
 	service *services.UserService
 }
 
-func NewUserHandler(s *server.Server,service *services.UserService) *UserHandler {
+func NewUserHandler(s *server.Server, service *services.UserService) *UserHandler {
 	return &UserHandler{s, service}
 }
 
@@ -43,13 +43,13 @@ func (handler *UserHandler) HandleUserCreate(w http.ResponseWriter, r *http.Requ
 		exceptions.ThrowInternalServerError(w, err.Error())
 		return
 	}
-	
+
 	// Return as DTO
 	response := &userdto.UserDTO{
-		Id: user.ID.String(),
-		Name: user.Name,
+		Id:    user.ID.String(),
+		Name:  user.Name,
 		Email: user.Email,
-		Role: string(user.Role),
+		Role:  string(user.Role),
 	}
 	handler.s.Logger.Printf("Response: %v\n", response)
 	handler.s.Respond(w, response, http.StatusOK)
@@ -67,10 +67,10 @@ func (handler *UserHandler) HandleUsersGet(w http.ResponseWriter, r *http.Reques
 	dtos := []userdto.UserDTO{}
 	for _, user := range users {
 		userDto := &userdto.UserDTO{
-			Id: user.ID.String(),
-			Name: user.Name,
+			Id:    user.ID.String(),
+			Name:  user.Name,
 			Email: user.Email,
-			Role: string(user.Role),
+			Role:  string(user.Role),
 		}
 		dtos = append(dtos, *userDto)
 	}
@@ -98,10 +98,10 @@ func (handler *UserHandler) HandleUserGet(w http.ResponseWriter, r *http.Request
 
 	// Convert to DTO
 	userDto := &userdto.UserDTO{
-		Id: user.ID.String(),
-		Name: user.Name,
+		Id:    user.ID.String(),
+		Name:  user.Name,
 		Email: user.Email,
-		Role: string(user.Role),
+		Role:  string(user.Role),
 	}
 	handler.s.Logger.Printf("Response: %v\n", userDto)
 	handler.s.Respond(w, userDto, http.StatusOK)

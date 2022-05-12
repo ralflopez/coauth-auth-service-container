@@ -9,8 +9,8 @@ import (
 )
 
 type UserRepository struct {
-	s *server.Server
-	ctx context.Context
+	s       *server.Server
+	ctx     context.Context
 	queries *db.Queries
 }
 
@@ -46,7 +46,7 @@ func (repo *UserRepository) GetUser(id string) (*db.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &user, nil
 }
 

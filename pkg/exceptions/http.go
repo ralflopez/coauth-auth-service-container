@@ -6,8 +6,8 @@ import (
 )
 
 type RequestError struct {
-	Status  int			`json:"status"`
-	Message string		`json:"message"`
+	Status  int    `json:"status"`
+	Message string `json:"message"`
 }
 
 func NewRequestError(status int, message string) *RequestError {

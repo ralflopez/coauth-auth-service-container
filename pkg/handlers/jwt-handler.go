@@ -11,7 +11,7 @@ import (
 )
 
 type JwtHandler struct {
-	s *server.Server
+	s          *server.Server
 	jwtService *services.JwtService
 }
 
@@ -30,7 +30,7 @@ func (handler *JwtHandler) HandleJwtSignup(w http.ResponseWriter, r *http.Reques
 	}
 
 	handler.s.Logger.Printf("Request Body: %v\n", createUserDTO)
-	
+
 	user, err := handler.jwtService.Signup(createUserDTO)
 	if err != nil {
 		handler.s.Logger.Printf("User Creation Error: %v\n", err.Error())
@@ -59,7 +59,7 @@ func (handler *JwtHandler) HandleJwtLogin(w http.ResponseWriter, r *http.Request
 	}
 
 	handler.s.Logger.Printf("Request Body: %v\n", loginDTO)
-	
+
 	user, err := handler.jwtService.Login(loginDTO)
 	if err != nil {
 		handler.s.Logger.Printf("Login Error: %v\n", err.Error())
@@ -78,7 +78,7 @@ func (handler *JwtHandler) HandleJwtLogin(w http.ResponseWriter, r *http.Request
 }
 
 func (handler *JwtHandler) HandleJwtUser(w http.ResponseWriter, r *http.Request) {
-	
+
 	user, err := handler.jwtService.GetLoggedInUser(r)
 	if err != nil {
 		handler.s.Logger.Printf("Jwt error: %v\n", err.Error())
@@ -87,10 +87,10 @@ func (handler *JwtHandler) HandleJwtUser(w http.ResponseWriter, r *http.Request)
 	}
 
 	userDTO := &userdto.UserDTO{
-		Id: user.ID.String(),
-		Name: user.Name,
+		Id:    user.ID.String(),
+		Name:  user.Name,
 		Email: user.Email,
-		Role: string(user.Role),
+		Role:  string(user.Role),
 	}
 
 	handler.s.Respond(w, userDTO, http.StatusOK)

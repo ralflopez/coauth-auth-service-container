@@ -14,10 +14,10 @@ import (
 )
 
 type Server struct {
-	port string
-	Router *mux.Router
-	DB *db.Queries
-	Logger *log.Logger
+	port         string
+	Router       *mux.Router
+	DB           *db.Queries
+	Logger       *log.Logger
 	SessionStore sessions.Store
 }
 

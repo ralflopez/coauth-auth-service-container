@@ -17,7 +17,7 @@ import (
 )
 
 type JwtService struct {
-	s *server.Server
+	s           *server.Server
 	userService *UserService
 }
 
@@ -25,12 +25,12 @@ func NewJwtService(s *server.Server, userService *UserService) *JwtService {
 	return &JwtService{s, userService}
 }
 
-func (service *JwtService) GenerateTokens(userId string) (*jwtdto.JwtResponse, error){
+func (service *JwtService) GenerateTokens(userId string) (*jwtdto.JwtResponse, error) {
 	accessTokenClaims := jwtdto.CustomClaims{
 		UserId: userId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(),
-			Issuer: os.Getenv("URL"),
+			Issuer:    os.Getenv("URL"),
 		},
 	}
 
@@ -38,7 +38,7 @@ func (service *JwtService) GenerateTokens(userId string) (*jwtdto.JwtResponse, e
 		UserId: userId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().AddDate(0, 0, 7).Unix(),
-			Issuer: os.Getenv("URL"),
+			Issuer:    os.Getenv("URL"),
 		},
 	}
 
@@ -57,7 +57,7 @@ func (service *JwtService) GenerateTokens(userId string) (*jwtdto.JwtResponse, e
 
 	jwtResponse := &jwtdto.JwtResponse{
 		RefreshToken: signedRefreshToken,
-		AccessToken: signedAccessToken,
+		AccessToken:  signedAccessToken,
 	}
 
 	return jwtResponse, nil
@@ -69,7 +69,7 @@ func (service *JwtService) Signup(dto *userdto.CreateUserDTO) (*db.User, error) 
 	if err == nil {
 		return nil, fmt.Errorf("email already taken")
 	}
-	
+
 	// Save to DB
 	user, err := service.userService.CreateUser(dto)
 	if err != nil {
