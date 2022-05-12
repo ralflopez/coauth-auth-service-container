@@ -13,7 +13,9 @@ func StartDB() (*sql.DB, *db.Queries, error) {
 	user := os.Getenv("DATABASE_USER")
 	password := os.Getenv("DATABASE_PASSWORD")
 	name := os.Getenv("DATABASE_NAME")
-	database, err := sql.Open("postgres", fmt.Sprintf("user=%v password=%v dbname=%v sslmode=disable", user, password, name))
+	host := os.Getenv("DATABASE_HOST")
+	port := os.Getenv("DATABASE_PORT")
+	database, err := sql.Open("postgres", fmt.Sprintf("user=%v password=%v dbname=%v host=%v port=%v sslmode=disable", user, password, name, host, port))
 	if err != nil {
 		return nil, nil, err
 	}

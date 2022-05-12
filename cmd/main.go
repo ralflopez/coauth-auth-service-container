@@ -12,7 +12,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
-	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -24,10 +23,10 @@ func main() {
 
 func run() error {
 	// Env
-	err := godotenv.Load()
-  	if err != nil {
-  	  log.Fatal("Error loading .env file")
-  	}
+	// err := godotenv.Load()
+  	// if err != nil {
+  	//   log.Fatal("Error loading .env file")
+  	// }
 
 	// Database
 	db, queries, err := db.StartDB()
