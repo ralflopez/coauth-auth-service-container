@@ -4,7 +4,10 @@ import (
 	"coauth/pkg/config/server"
 	"coauth/pkg/db"
 	"coauth/pkg/dtos/jwtdto"
+	"coauth/pkg/dtos/sessiondto"
 	"coauth/pkg/dtos/userdto"
+	"coauth/pkg/utils"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -63,6 +66,22 @@ func (service *JwtService) Signup(dto *userdto.CreateUserDTO) (*db.User, error) 
 	user, err := service.userService.CreateUser(dto)
 	if err != nil {
 		return nil, err
+	}
+
+	return user, nil
+}
+
+func (service *JwtService) Login(dto *sessiondto.LoginDTO) (*db.User, error) {
+	// Find in DB
+	user, err := service.userService.GetUserByEmail(dto.Email)
+	if err != nil {
+		return nil, fmt.Errorf("incorrect email / password")
+	}
+
+	// Check hash
+	match := utils.CheckPasswordHash(dto.Password, user.Password)
+	if !match {
+		return nil, fmt.Errorf("incorrect email / password")
 	}
 
 	return user, nil

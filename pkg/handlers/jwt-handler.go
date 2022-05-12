@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"coauth/pkg/config/server"
+	"coauth/pkg/dtos/sessiondto"
 	"coauth/pkg/dtos/userdto"
 	"coauth/pkg/exceptions"
 	"coauth/pkg/services"
@@ -30,6 +31,35 @@ func (handler *JwtHandler) HandleJwtSignup(w http.ResponseWriter, r *http.Reques
 	handler.s.Logger.Printf("Request Body: %v\n", createUserDTO)
 	
 	user, err := handler.jwtService.Signup(createUserDTO)
+	if err != nil {
+		handler.s.Logger.Printf("User Creation Error: %v\n", err.Error())
+		exceptions.ThrowInternalServerError(w, "Token generation error")
+		return
+	}
+
+	jwtResponse, err := handler.jwtService.GenerateTokens(user.ID.String())
+	if err != nil {
+		handler.s.Logger.Printf("Token Generator Error: %v\n", err.Error())
+		exceptions.ThrowInternalServerError(w, "Token generation error")
+		return
+	}
+
+	handler.s.Respond(w, jwtResponse, http.StatusOK)
+}
+
+func (handler *JwtHandler) HandleJwtLogin(w http.ResponseWriter, r *http.Request) {
+	var loginDTO *sessiondto.LoginDTO
+	handler.s.Decode(w, r, &loginDTO)
+
+	if loginDTO == nil {
+		handler.s.Logger.Printf("request body invalid")
+		exceptions.ThrowInternalServerError(w, "Token generation error")
+		return
+	}
+
+	handler.s.Logger.Printf("Request Body: %v\n", loginDTO)
+	
+	user, err := handler.jwtService.Login(loginDTO)
 	if err != nil {
 		handler.s.Logger.Printf("User Creation Error: %v\n", err.Error())
 		exceptions.ThrowInternalServerError(w, "Token generation error")
