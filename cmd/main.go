@@ -11,8 +11,8 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
-	redistore "gopkg.in/boj/redistore.v1"
 )
 
 func main() {
@@ -37,14 +37,14 @@ func run() error {
 	defer db.Close()
 
 	// Session Store
-	// var sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-	sessionStorePort := ":" + os.Getenv("REDIS_PORT")
-	sessionStorePassword := os.Getenv("REDIS_PASSWORD")
-	sessionStore, err := redistore.NewRediStore(10, "tcp", sessionStorePort, sessionStorePassword, []byte("secret-key"))
-	if err != nil {
-		panic(err)
-	}
-	defer sessionStore.Close()
+	var sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	// sessionStorePort := ":" + os.Getenv("REDIS_PORT")
+	// sessionStorePassword := os.Getenv("REDIS_PASSWORD")
+	// sessionStore, err := redistore.NewRediStore(10, "tcp", sessionStorePort, sessionStorePassword, []byte("secret-key"))
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer sessionStore.Close()
 
 	// Server
 	r := mux.NewRouter()
@@ -60,6 +60,7 @@ func run() error {
 	if port == "" {
 		port = "9000"
 	}
+	fmt.Printf("Server listening in port: %v\n", port)
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), s.Router)
 	if err == nil {
 		return err
