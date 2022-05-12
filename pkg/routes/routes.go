@@ -5,10 +5,16 @@ import (
 
 	"coauth/pkg/config/di"
 	"coauth/pkg/config/server"
+	"coauth/pkg/handlers"
 	"coauth/pkg/middlewares"
 )
 
 func RegisterRoutes(s *server.Server, di *di.DIContainer) {
+
+	// Test
+	test := s.Router.PathPrefix("/test").Subrouter().StrictSlash(false)
+	test.HandleFunc("", handlers.Test).Methods(http.MethodGet)
+
 	// Session Authentication
 	sessionAuth := s.Router.PathPrefix("/session").Subrouter().StrictSlash(false)
 	sessionAuth.HandleFunc("/login", di.SessionHandler.HandleSessionLogin).Methods(http.MethodPost)
