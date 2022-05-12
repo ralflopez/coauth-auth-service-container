@@ -1,5 +1,23 @@
 version: '3.1'
 services:
+  api:
+    image: coauth
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+      - adminer
+      - cache
+    environment:
+      - PORT=9000
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=user
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=coauth
+      - URL=http://localhost:3000
+    networks:
+      - coauthapi
   db:
     image: postgres
     restart: always
@@ -8,19 +26,23 @@ services:
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: user
+    networks:
+      - coauthapi
   adminer:
     image: adminer
     restart: always
     ports:
       - "8080:8080"
+    networks:
+      - coauthapi
   cache:
     image: redis:6.2-alpine
     restart: always
     ports:
       - "63791:63791"
     command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
-    # volumes: 
-      # - cache:/data
-# volumes:
-  # cache:
-    # driver: local
+    networks:
+      - coauthapi
+networks:
+  coauthapi:
+    driver: bridge
