@@ -9,6 +9,7 @@ import (
 	"coauth/pkg/utils"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -29,7 +30,7 @@ func (service *JwtService) GenerateTokens(userId string) (*jwtdto.JwtResponse, e
 		UserId: userId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(),
-			Issuer: "website_name",
+			Issuer: os.Getenv("URL"),
 		},
 	}
 
@@ -37,7 +38,7 @@ func (service *JwtService) GenerateTokens(userId string) (*jwtdto.JwtResponse, e
 		UserId: userId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().AddDate(0, 0, 7).Unix(),
-			Issuer: "website_name",
+			Issuer: os.Getenv("URL"),
 		},
 	}
 
