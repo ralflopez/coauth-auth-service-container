@@ -11,6 +11,8 @@ import (
 	"net/http"
 )
 
+const RefreshTokenCookieId = "coauth.rt";
+
 type JwtHandler struct {
 	s          *server.Server
 	jwtService *services.JwtService
@@ -46,6 +48,9 @@ func (handler *JwtHandler) HandleJwtSignup(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	// Set cookie
+	cookie := http.Cookie{Name: RefreshTokenCookieId, Value: jwtResponse.RefreshToken}
+	http.SetCookie(w, &cookie)
 	handler.s.Respond(w, jwtResponse, http.StatusOK)
 }
 
@@ -83,6 +88,9 @@ func (handler *JwtHandler) HandleJwtLogin(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	// Set cookie
+	cookie := http.Cookie{Name: RefreshTokenCookieId, Value: jwtResponse.RefreshToken}
+	http.SetCookie(w, &cookie)
 	handler.s.Respond(w, jwtResponse, http.StatusOK)
 }
 
@@ -102,5 +110,15 @@ func (handler *JwtHandler) HandleJwtUser(w http.ResponseWriter, r *http.Request)
 		Role:  string(user.Role),
 	}
 
+	jwtResponse, err := handler.jwtService.GenerateTokens(user.ID.String())
+	if err != nil {
+		handler.s.Logger.Printf("Token Generator Error: %v\n", err.Error())
+		exceptions.ThrowInternalServerError(w, fmt.Sprintf("Token generation error: %v\n", err.Error()))
+		return
+	}
+
+	// Set cookie
+	cookie := http.Cookie{Name: RefreshTokenCookieId, Value: jwtResponse.RefreshToken}
+	http.SetCookie(w, &cookie)
 	handler.s.Respond(w, userDTO, http.StatusOK)
 }
